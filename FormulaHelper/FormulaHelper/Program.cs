@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -6,109 +7,74 @@ namespace FormulaHelper
 {
     class Program
     {
-        
-        //Пример raw формулы
-        //string rawFormula = "¬X1∧X2∧X3∧¬X4∧¬X5∨X1∧X2∧X3∧¬X4∧¬X5∨¬X1∧X2∧¬X3∧X4∧¬X5∨X1∧X2∧¬X3∧X4∧X5∨X1∧¬X2∧X3∧X4∧X5∨¬X1∧¬X2∧¬X3∧¬X4∧X5∨X1∧X2∧¬X3∧¬X4∧X5∨¬X1∧X2∧¬X3∧¬X4∧X5";
-        static string FormatFormulaToWord(string rawFormula)
-        {
-            string FormatFormula = rawFormula.Replace("¬", "\\overbar");
-
-            FormatFormula = FormatFormula.Replace("1", "!");
-            FormatFormula = FormatFormula.Replace("2", "@");
-            FormatFormula = FormatFormula.Replace("3", "#");
-            FormatFormula = FormatFormula.Replace("4", "$");
-            FormatFormula = FormatFormula.Replace("5", "%");
-
-            FormatFormula = FormatFormula.Replace("!", "0");
-            FormatFormula = FormatFormula.Replace("@", "1");
-            FormatFormula = FormatFormula.Replace("#", "2");
-            FormatFormula = FormatFormula.Replace("$", "3");
-            FormatFormula = FormatFormula.Replace("%", "4");
-
-            FormatFormula = FormatFormula.Replace("rX0", "r(X0)");
-            FormatFormula = FormatFormula.Replace("rX1", "r(X1)");
-            FormatFormula = FormatFormula.Replace("rX2", "r(X2)");
-            FormatFormula = FormatFormula.Replace("rX3", "r(X3)");
-            FormatFormula = FormatFormula.Replace("rX4", "r(X4)");
-
-            //old Version
-            /*int num1 = 1;
-            var chars1 = num1.ToString().Select(c => (char)('₀' + c - '0'));
-            int num2 = 2;
-            var chars2 = num2.ToString().Select(c => (char)('₀' + c - '0'));
-            int num3 = 3;
-            var chars3 = num3.ToString().Select(c => (char)('₀' + c - '0'));
-            int num4 = 4;
-            var chars4 = num4.ToString().Select(c => (char)('₀' + c - '0'));*/
-
-            /*FormatFormula = FormatFormula.Replace('1', chars1.First());
-            FormatFormula = FormatFormula.Replace('2', chars2.First());
-            FormatFormula = FormatFormula.Replace('3', chars3.First());
-            FormatFormula = FormatFormula.Replace('4', chars4.First());*/
-
-            FormatFormula = FormatFormula.Replace("0", "_0");
-            FormatFormula = FormatFormula.Replace("1", "_1");
-            FormatFormula = FormatFormula.Replace("2", "_2");
-            FormatFormula = FormatFormula.Replace("3", "_3");
-            FormatFormula = FormatFormula.Replace("4", "_4");
-            return FormatFormula;
-        }
-        //MatchEvaluator С#9.0 switch expression
-        public static string MA(Match match) => match.Value switch
-        {
-            
-            "¬X1" => "\\overbar(X_0)",
-            "¬X2" => "\\overbar(X_1)",
-            "¬X3" => "\\overbar(X_2)",
-            "¬X4" => "\\overbar(X_3)",
-            "¬X5" => "\\overbar(X_4)",
-            "X1" => "X_0",
-            "X2" => "X_1",
-            "X3" => "X_2",
-            "X4" => "X_3",
-            "X5" => "X_4",
-            _ => match.Value
-
+        public static string[] Y = new string[]{
+            "¬X1∧¬X2∧¬X3∧¬X4∧¬X5∨X1∧X2∧X3∧¬X4∧¬X5∨X1∧¬X2∧X3∧¬X4∧¬X5∨¬X1∧¬X2∧X3∧¬X4∧¬X5∨¬X1∧X2∧¬X3∧X4∧¬X5∨¬X1∧X2∧X3∧X4∧¬X5∨¬X1∧¬X2∧¬X3∧¬X4∧X5∨¬X1∧X2∧¬X3∧¬X4∧X5",
+            "¬X1∧X2∧X3∧¬X4∧¬X5∨X1∧X2∧X3∧¬X4∧¬X5∨X1∧¬X2∧X3∧¬X4∧¬X5∨¬X1∧X2∧X3∧X4∧¬X5∨X1∧¬X2∧¬X3∧X4∧X5∨X1∧X2∧¬X3∧X4∧X5∨¬X1∧¬X2∧X3∧X4∧X5∨¬X1∧¬X2∧¬X3∧¬X4∧X5",
+            "¬X1∧¬X2∧¬X3∧¬X4∧¬X5∨¬X1∧X2∧X3∧¬X4∧¬X5∨X1∧X2∧X3∧¬X4∧¬X5∨¬X1∧X2∧¬X3∧X4∧¬X5∨¬X1∧X2∧X3∧X4∧¬X5∨X1∧X2∧X3∧X4∧X5∨X1∧¬X2∧X3∧X4∧X5∨¬X1∧¬X2∧X3∧X4∧X5",
+            "¬X1∧X2∧X3∧¬X4∧¬X5∨X1∧X2∧X3∧¬X4∧¬X5∨¬X1∧X2∧¬X3∧X4∧¬X5∨X1∧X2∧¬X3∧X4∧X5∨X1∧¬X2∧X3∧X4∧X5∨¬X1∧¬X2∧¬X3∧¬X4∧X5∨X1∧X2∧¬X3∧¬X4∧X5∨¬X1∧X2∧¬X3∧¬X4∧X5"
         };
-        //MatchEvaluator native switch
-        public static string MA1(Match match)
+
+        public static string RM_AND(string raw_formula) => Regex.Replace(raw_formula, @"[\s]*∧[\s]*", @" \; "); // todo: добавить рассмотрение скобок
+        public static string Basis(string raw_formula)
         {
-            switch (match.Value)
+            string[] components = raw_formula.Split("∨");
+            for (int i = 0; i < components.Length; i++) components[i] = "¬(" + components[i] + ")";
+            return "¬(" + String.Join("∧", components) + ")";
+        }
+
+        public static string Over_MA(Match m)
+        {
+            string output = m.Value;
+            if (output != "")
             {
-                //С#9.0 switch expression
-                case string s when s.StartsWith('X'):
-                    return @$"X_{(char)(s[1] - 1)}";
-                case string s when s.StartsWith("¬X"):
-                    return @$"\overbar(X_{(char)(s[2] - 1)})";
-                default:
-                    return match.Value;
+                output = output.TrimStart('¬');
+                if (output.StartsWith("(") && output.EndsWith(")")) output = output.Substring(1, output.Length - 2);
+                return @" \overline{" + output + @"} ";
+            }
+            else
+            {
+                return "";
             }
         }
-        //Подход через MatchEvaluator
-        public static string RegexReplace(string text, MatchEvaluator ma)
+
+        public static string OVER_MA(Match m) => (m.Value.StartsWith("¬(") && m.Value.EndsWith(")")) ? m.Value.Substring(2, m.Value.Length - 3) : m.Value.TrimStart('¬');
+
+        public static string LatexConverter(string raw_formula)
         {
-            string output;
-
-            output = text;
-
-            output = Regex.Replace(text, @"[¬{1}]+[X{1}]+[\d{1}]|[X{1}]+[\d{1}]", ma);
-
+            string output = raw_formula;
+            var symbols = new Dictionary<string, string>()
+            {
+                ["∧"] = @"\land",
+                ["∨"] = @"\vee",
+                ["∩"] = @"\cap",
+                ["∪"] = @"\cup"
+            };
+            output = Regex.Replace(output, @"X[^\d]", "X1"); // X → X1 (X0)
+            while (output.Contains("¬"))
+            {
+                output = Regex.Replace(output, @"(¬\([^\(\)]*\))|(¬\-?X[\d]*)", Over_MA); // только для одиночных иксов или скобок
+            }
+            output = Regex.Replace(output, @"(?<=X[\-_\^\d]*[\s\}\\\)]*)[^\w\s\d\\{};](?=[\-\\\(\s]*((X)|(\\over)))", m => @$" {symbols.GetValueOrDefault(m.Value, m.Value)} "); // Замена операндов
+            output = Regex.Replace(output, @"X[\d]*", m => @$"X_{{{Convert.ToInt32(m.Value.Substring(m.Value.IndexOf('X') + 1)) - 1}}} "); // Уменьшение индексов
+            output = Regex.Replace(output, @"\^[\-\d]*", m => @$"^{{{m.Value.TrimStart('^')}}}"); // Степени
+            output = Regex.Replace(output, @"\^\{[\d]\}*(?=[^\}\s])", m => @$"{m.Value} "); // todo: Костыль со степенями и пробелами
+            output = Regex.Replace(output, @"[\s]+", " ");
             return output;
         }
-        
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            foreach(string rawFormule in Y)
+            {
+                string output = RM_AND(rawFormule);
+                //output = Basis(output);
+                output = LatexConverter(output);
 
-            string rawFormule = "¬X1∧X2∧X3∧¬X4∧¬X5∨X1∧X2∧X3∧¬X4∧¬X5∨¬X1∧X2∧¬X3∧X4∧¬X5∨X1∧X2∧¬X3∧X4∧X5∨X1∧¬X2∧X3∧X4∧X5∨¬X1∧¬X2∧¬X3∧¬X4∧X5∨X1∧X2∧¬X3∧¬X4∧X5∨¬X1∧X2∧¬X3∧¬X4∧X5";
-
-            string FormattedFormula = FormatFormulaToWord(rawFormule);
-
-            string FormattedFormula1 = RegexReplace(rawFormule, MA);
-
-            string FormattedFormula2 = RegexReplace(rawFormule, MA1);
-
-            Console.ReadLine();
+                Console.WriteLine("final\t" + output + "\n");
+                Console.ReadLine();
+            }
+            //string rawFormule = "¬X1∧¬X2∧¬X3∧¬X4∧¬X5∨X1∧X2∧X3∧¬X4∧¬X5∨X1∧¬X2∧X3∧¬X4∧¬X5∨¬X1∧¬X2∧X3∧¬X4∧¬X5∨¬X1∧X2∧¬X3∧X4∧¬X5∨¬X1∧X2∧X3∧X4∧¬X5∨¬X1∧¬X2∧¬X3∧¬X4∧X5∨¬X1∧X2∧¬X3∧¬X4∧X5";
+            
         }
     }
 }

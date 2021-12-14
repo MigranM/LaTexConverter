@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "fyhN0xHePJhlE4envdrlEq2QWpFzwV3FFB6SxhT5NFVIiwxtZln2P98NJo34Pbm4/EiHn0xJ0DWetY8MlcKRJA==",
+  "dgSpecHash": "FdeJHQCDZ23ysKeWHfYPmxI6xeW2qb8NHPcbXEANDuP7je8ONahG5sLvte0TX1/GgMFpKkWqlA6RS+3X3zr7sA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\migra\\source\\repos\\FormulaHelper\\FormulaHelper\\FormulaHelper.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\ilya\\Documents\\GitHub\\LaTexConverter\\FormulaHelper\\FormulaHelper\\FormulaHelper.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ilya\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\5.0.12\\microsoft.netcore.app.host.win-x64.5.0.12.nupkg.sha512"
+  ],
   "logs": []
 }
