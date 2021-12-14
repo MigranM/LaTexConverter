@@ -7,10 +7,14 @@ namespace FormulaHelper
 {
     class Program
     {
-        
+        public static string[] Y = new string[]{
+            "¬X1∧¬X2∧¬X3∧¬X4∧¬X5∨X1∧X2∧X3∧¬X4∧¬X5∨X1∧¬X2∧X3∧¬X4∧¬X5∨¬X1∧¬X2∧X3∧¬X4∧¬X5∨¬X1∧X2∧¬X3∧X4∧¬X5∨¬X1∧X2∧X3∧X4∧¬X5∨¬X1∧¬X2∧¬X3∧¬X4∧X5∨¬X1∧X2∧¬X3∧¬X4∧X5",
+            "¬X1∧X2∧X3∧¬X4∧¬X5∨X1∧X2∧X3∧¬X4∧¬X5∨X1∧¬X2∧X3∧¬X4∧¬X5∨¬X1∧X2∧X3∧X4∧¬X5∨X1∧¬X2∧¬X3∧X4∧X5∨X1∧X2∧¬X3∧X4∧X5∨¬X1∧¬X2∧X3∧X4∧X5∨¬X1∧¬X2∧¬X3∧¬X4∧X5",
+            "¬X1∧¬X2∧¬X3∧¬X4∧¬X5∨¬X1∧X2∧X3∧¬X4∧¬X5∨X1∧X2∧X3∧¬X4∧¬X5∨¬X1∧X2∧¬X3∧X4∧¬X5∨¬X1∧X2∧X3∧X4∧¬X5∨X1∧X2∧X3∧X4∧X5∨X1∧¬X2∧X3∧X4∧X5∨¬X1∧¬X2∧X3∧X4∧X5",
+            "¬X1∧X2∧X3∧¬X4∧¬X5∨X1∧X2∧X3∧¬X4∧¬X5∨¬X1∧X2∧¬X3∧X4∧¬X5∨X1∧X2∧¬X3∧X4∧X5∨X1∧¬X2∧X3∧X4∧X5∨¬X1∧¬X2∧¬X3∧¬X4∧X5∨X1∧X2∧¬X3∧¬X4∧X5∨¬X1∧X2∧¬X3∧¬X4∧X5"
+        };
 
         public static string RM_AND(string raw_formula) => Regex.Replace(raw_formula, @"[\s]*∧[\s]*", @" \; "); // todo: добавить рассмотрение скобок
-
         public static string Basis(string raw_formula)
         {
             string[] components = raw_formula.Split("∨");
@@ -20,7 +24,6 @@ namespace FormulaHelper
 
         public static string Over_MA(Match m)
         {
-            Console.WriteLine($"#{m.Value}#");
             string output = m.Value;
             if (output != "")
             {
@@ -30,7 +33,6 @@ namespace FormulaHelper
             }
             else
             {
-                Console.WriteLine($"${output}$");
                 return "";
             }
         }
@@ -62,17 +64,17 @@ namespace FormulaHelper
 
         static void Main(string[] args)
         {
-            string rawFormule = "¬X1∧¬X2∧¬X3∧¬X4∧¬X5∨X1∧X2∧X3∧¬X4∧¬X5∨X1∧¬X2∧X3∧¬X4∧¬X5∨¬X1∧¬X2∧X3∧¬X4∧¬X5∨¬X1∧X2∧¬X3∧X4∧¬X5∨¬X1∧X2∧X3∧X4∧¬X5∨¬X1∧¬X2∧¬X3∧¬X4∧X5∨¬X1∧X2∧¬X3∧¬X4∧X5";
-            Console.WriteLine("raw\t" + rawFormule + "\n");
+            foreach(string rawFormule in Y)
+            {
+                string output = RM_AND(rawFormule);
+                //output = Basis(output);
+                output = LatexConverter(output);
 
-            string output = RM_AND(rawFormule);
-            Console.WriteLine("step1\t" + output + "\n");
-            output = Basis(output);
-            Console.WriteLine("step2\t" + output + "\n");
-            output = LatexConverter(output);
-
-            Console.WriteLine("final\t" + output + "\n");
-            Console.ReadLine();
+                Console.WriteLine("final\t" + output + "\n");
+                Console.ReadLine();
+            }
+            //string rawFormule = "¬X1∧¬X2∧¬X3∧¬X4∧¬X5∨X1∧X2∧X3∧¬X4∧¬X5∨X1∧¬X2∧X3∧¬X4∧¬X5∨¬X1∧¬X2∧X3∧¬X4∧¬X5∨¬X1∧X2∧¬X3∧X4∧¬X5∨¬X1∧X2∧X3∧X4∧¬X5∨¬X1∧¬X2∧¬X3∧¬X4∧X5∨¬X1∧X2∧¬X3∧¬X4∧X5";
+            
         }
     }
 }
